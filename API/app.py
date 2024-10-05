@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 import os
+from flask import after_this_request
 
 from API.product_manager import ProductManager
 from API.prompt_manager import PromptManager
@@ -10,6 +11,12 @@ load_dotenv()
 CHAT = os.getenv("LLAMA_API") + "/chat"
 
 app = Flask(__name__)
+
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
 # Home route
@@ -22,7 +29,11 @@ def home():
 @app.route('/api/question', methods=['GET'])
 def get_prompt():
     prompt = request.args.get('prompt')
-    company_info = request.args.get('company_info')
+    company_info = request.args.get('company_info', 'Cargo123 is a logistics company that specializes in providing '
+                                                    'efficient and reliable transportation solutions. With a focus on '
+                                                    'streamlining supply chains, Cargo123 offers a range of services '
+                                                    'including freight management, warehousing, and timely delivery '
+                                                    'across various regions.')
     if not prompt:
         return jsonify(response="Missing prompt"), 500
 
@@ -53,9 +64,10 @@ def get_prompt():
             continue
     else:
         return jsonify(message="Sorry, I cannot give an answer. Please try rephrase the question.")
-
+    print(sql)
+    print(table_data)
     # Phase 3: Get answer to user question, provided analytical context
-    answer = prompt_manager.get_answer(table_data, customer_info=product_manager.get_info())
+    answer = prompt_manager.get_answer(table_data, customer_info=product_manager.get_info(), query=sql)
 
     return jsonify(message=answer)
 

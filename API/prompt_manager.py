@@ -49,21 +49,22 @@ class PromptManager:
         dict_list = [json.loads(json_str) for json_str in json_strings]
         return "".join([_dict['message']['content'] for _dict in dict_list]).replace("\n", " ")
 
-    def get_answer(self, table_data, prompt=None, customer_info=None, db_text_info=None):
+    def get_answer(self, table_data, query, prompt=None, customer_info=None, db_text_info=None):
         if not prompt:
             prompt = self.prompt
 
         if not db_text_info:
             db_text_info = self.db_text_info
-        customer_info_string = f" and customer information {customer_info}" if customer_info else ""
+        customer_info_string = f"{customer_info}" if customer_info else ""
 
         payload = json.dumps({
             "model": "llama3.1",
             "messages": [
                 {
                     "role": "user",
-                    "content": f"Given the data {table_data}{customer_info_string}, please answer the following "
-                               f"question:\n{prompt}"
+                    "content": f"Given company information {customer_info_string} and the data {table_data} resulted "
+                               f"from running the query {query} against the db {db_text_info}, please answer the following"
+                               f"question in very simple terms, plain english.:\n{prompt}"
                 }
             ]
         })
