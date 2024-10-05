@@ -33,6 +33,9 @@ class ProductManager:
         except Exception as e:
             print(f"Failed to connect to the database: {e}")
 
+    def get_info(self):
+        return self.info
+
     def convert_to_prompt(self, table_info_list):
         prompt_parts = []
 
@@ -137,11 +140,14 @@ if __name__ == "__main__":
     product_manager = ProductManager(title='Sample Product', info='Truck company', db_info=db_info)
     results = product_manager.execute_query()
 
-    print(results)
 
-    pm = PromptManager("http://localhost:11434/api/chat",
+    prompt_manager = PromptManager("http://localhost:11434/api/chat",
                        "How many runs did each truck had? I need to know truck names.", db_text_info=results)
-    sql = pm.get_custom_sql()
-    res = product_manager.execute_custom_query(sql)
+    sql = prompt_manager.get_custom_sql()
+    table_data = product_manager.execute_custom_query(sql)
 
-    print(res)
+    answer = prompt_manager.get_answer(table_data, customer_info='''Cargo123 is a logistics company that specializes 
+    in providing efficient and reliable transportation solutions. With a focus on streamlining supply chains, 
+    Cargo123 offers a range of services including freight management, warehousing, and timely delivery across various 
+    regions.''')
+    print(answer)

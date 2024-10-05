@@ -48,3 +48,32 @@ class PromptManager:
         # Parse each JSON string into a dictionary
         dict_list = [json.loads(json_str) for json_str in json_strings]
         return "".join([_dict['message']['content'] for _dict in dict_list]).replace("\n", " ")
+
+    def get_answer(self, table_data, prompt=None, customer_info=None, db_text_info=None):
+        if not prompt:
+            prompt = self.prompt
+
+        if not db_text_info:
+            db_text_info = self.db_text_info
+        customer_info_string = f" and customer information {customer_info}" if customer_info else ""
+
+        payload = json.dumps({
+            "model": "llama3.1",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"Given the data {table_data}{customer_info_string}, please answer the following "
+                               f"question:\n{prompt}"
+                }
+            ]
+        })
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", self.url, headers=headers, data=payload)
+        json_strings = response.text.strip().split('\n')
+
+        # Parse each JSON string into a dictionary
+        dict_list = [json.loads(json_str) for json_str in json_strings]
+        return "".join([_dict['message']['content'] for _dict in dict_list]).replace("\n", " ")
