@@ -26,9 +26,10 @@ class PromptManager:
             "messages": [
                 {
                     "role": "system",
-                    "content": f"I have an SQL in PostgreSQL with the following structure \n{db_text_info}\n and I "
+                    "content": f"Act as data analyst. I have an SQL in PostgreSQL with the following structure \n{db_text_info}\n and I "
                                f"want you to create SQL scripts given my instructions. When you build the SQL code "
-                               f"please specify the database in the FROM statement. I want you to output only the SQL "
+                               f"please specify the database in the FROM statement. Keep in mind that every word "
+                               f"could be a condition. I want you to output only the SQL"
                                f"code in plain text! Do not include"
                                f"anything else in your answer! Please output only the SQL code in plain text!"
                 },
@@ -63,8 +64,9 @@ class PromptManager:
                 {
                     "role": "user",
                     "content": f"Given company information {customer_info_string} and the data {table_data} resulted "
-                               f"from running the query {query} against the db {db_text_info}, please answer the following"
-                               f"question in very simple terms, plain english.:\n{prompt}"
+                               f"from running the query {query} against the db {db_text_info}, please answer the "
+                               f"following"
+                               f"question precisely in simple terms.:\n{prompt}"
                 }
             ]
         })
