@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from sqlalchemy import create_engine, text
+from prompt_manager import PromptManager
 
 
 @dataclass
@@ -47,6 +48,33 @@ class ProductManager:
 
         # Join all parts into a single string
         return "\n".join(prompt_parts)
+
+    def convert_to_prompt_custom(self, table_info_list):
+        prompt_parts = []
+
+        for table_info in table_info_list:
+            part = []
+
+            # Dynamically include each key-value pair in the table_info dictionary
+            for key, value in table_info.items():
+                # Format key for display, if needed (optional)
+                formatted_key = key.replace('_', ' ').capitalize()  # Convert underscores to spaces and capitalize
+                part.append(f"{formatted_key}: {value}")
+
+            # Join the parts for the current table and add to prompt_parts
+            prompt_parts.append("\n".join(part))
+
+        # Join all parts into a single string, separating tables with a blank line
+        return "\n\n".join(prompt_parts)
+
+    def execute_custom_query(self, query):
+        try:
+            with self.engine.connect() as connection:
+                result = connection.execute(text(query))
+                return self.convert_to_prompt_custom(result.mappings().all())
+        except Exception as e:
+            print(f"Error executing query: {e}")
+            return []
 
     def execute_query(self):
         query = """
@@ -109,6 +137,11 @@ if __name__ == "__main__":
     product_manager = ProductManager(title='Sample Product', info='Truck company', db_info=db_info)
     results = product_manager.execute_query()
 
-    print(results)  # Print each TableInfo instance
+    print(results)
 
+    pm = PromptManager("http://localhost:11434/api/chat",
+                       "How many runs did each truck had? I need to know truck names.", db_text_info=results)
+    sql = pm.get_custom_sql()
+    res = product_manager.execute_custom_query(sql)
 
+    print(res)

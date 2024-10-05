@@ -1,21 +1,40 @@
 import requests as requests
 import json
 
+
 class PromptManager:
-    def __init__(self, url):
+    def __init__(self, url, prompt=None, db_text_info=None):
+        self.db_text_info = db_text_info
+        self.prompt = prompt
         self.url = url
 
-    def send_response(self):
+    def set_prompt(self, prompt):
+        self.prompt = prompt
+
+    def get_custom_sql(self, db_text_info=None):
+        if not self.prompt:
+            raise Exception("Missing prompt!")
+
+        if not db_text_info:
+            db_text_info = self.db_text_info
+
+        if not db_text_info:
+            raise Exception("Please provide db info!")
+
         payload = json.dumps({
             "model": "llama3.1",
             "messages": [
                 {
                     "role": "system",
-                    "content": "I have an SQL in MySQL and I want you to create SQL scripts given my instructions. The table, called \"hist\", has columns \"date\" which is varchar, \"ticker\" which is varchar and \"close\" which is float. When you build the SQL code please specify the database (\"prices\") in the FROM statement. For example prices.hist. I want you to output only the SQL code in plain text! Do not include anything else in your answer! Please output only the SQL code in plain text!"
+                    "content": f"I have an SQL in PostgreSQL with the following structure \n{db_text_info}\n and I "
+                               f"want you to create SQL scripts given my instructions. When you build the SQL code "
+                               f"please specify the database in the FROM statement. I want you to output only the SQL "
+                               f"code in plain text! Do not include"
+                               f"anything else in your answer! Please output only the SQL code in plain text!"
                 },
                 {
                     "role": "user",
-                    "content": "Give me average montly price for each stock with month"
+                    "content": self.prompt
                 }
             ]
         })
@@ -23,4 +42,9 @@ class PromptManager:
             'Content-Type': 'application/json'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", self.url, headers=headers, data=payload)
+        json_strings = response.text.strip().split('\n')
+
+        # Parse each JSON string into a dictionary
+        dict_list = [json.loads(json_str) for json_str in json_strings]
+        return "".join([_dict['message']['content'] for _dict in dict_list]).replace("\n", " ")
