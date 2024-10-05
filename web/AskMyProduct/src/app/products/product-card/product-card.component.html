@@ -10,8 +10,15 @@
       {{description}}
     </p>
   </mat-card-content>
-  <mat-card-actions>
+  <!-- <mat-card-actions>
     <button mat-button>LIKE</button>
     <button mat-button>SHARE</button>
-  </mat-card-actions>
+  </mat-card-actions> -->
+  <div class="action-overlay" (click)="onAsk()">
+    <div class="action ui-flex ui-items-center  ui-flex-column">
+      <mat-icon>question_answer</mat-icon>
+      <span>Ask a question</span>
+    </div>
+  </div>
 </mat-card>
+

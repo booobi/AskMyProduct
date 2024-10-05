@@ -1,0 +1,53 @@
+<div class="ask-container">
+  @switch (uiState$ | async) {
+
+  @case ('MAIN') {
+  <ng-container *ngTemplateOutlet="mainTemplate" />
+  }
+  @case ('LOADING') {
+  <ng-container *ngTemplateOutlet="loadingTemplate" />
+  }
+  @case ('ANSWER') {
+  <ng-container *ngTemplateOutlet="answerTemplate; context: {answer: facade.answer$ | async}" />
+  }
+  @case ('ERROR') {
+  <ng-container *ngTemplateOutlet="errorTemplate; context: {error: facade.error$ | async}" />
+  }
+
+  }
+</div>
+
+<ng-template #mainTemplate>
+  <h1>Ask Cargo123 anything!</h1>
+  <mat-form-field appearance="fill" class="ask-field">
+    <mat-label>Your question</mat-label>
+    <input matInput [formControl]="userInput" placeholder="Enter your input" required>
+    <mat-error *ngIf="userInput.hasError('required')">
+      Input is required
+    </mat-error>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="userInput.invalid" (click)="submitQuestion()">
+    Ask
+  </button>
+</ng-template>
+
+<ng-template #errorTemplate>
+  There was an error with your request. Please try again later.
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <div class="ui-flex ui-flex-column ui-items-center ui-mt">
+    <h2>Cargo123 is generating an answer</h2>
+    <div class="meta-text ui-mt">Please wait</div>
+    <mat-spinner class="ui-mt"></mat-spinner>
+  </div>
+</ng-template>
+
+<ng-template #answerTemplate let-answer="answer">
+  <h1>Cargo123 answers:</h1>
+  <h3 class="answer">{{answer}}</h3>
+  <button mat-raised-button color="primary" type="submit" (click)="resetQuestion()">
+    Ask another question?
+  </button>
+</ng-template>

@@ -1,0 +1,63 @@
+::ng-deep .ask-field input {
+    text-align: center !important;
+}
+
+::ng-deep label.mdc-floating-label {
+    width: 100% !important;
+    text-align: center;
+
+    &--float-above {
+        transform: translateY(-106%) scale(1) !important;
+    }
+}
+
+mat-error {
+    text-align: center;
+}
+
+.ask-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .ask-field {
+        width: 80%;
+    }
+
+    button {
+        margin-top: 20px;
+        width: 50%;
+    }
+}
+
+// LOADING
+
+.loading-card {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center; /* Center the text and spinner */
+  }
+  
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* Adjust height as needed */
+  }
+  
+  mat-card-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  
+  mat-card-content {
+    font-size: 1rem;
+    color: #555;
+  }
+
+  .answer {
+    margin: 20px 20px;
+  }
