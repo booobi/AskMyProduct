@@ -1,12 +1,24 @@
-<div class="products-container">
-  @for (product of products$ | async; track $index) {
-    <app-product-card
-    [title]="product.title"
-    [description]="product.description"
-    [imageUrl]="product.imageUrl"
-    (ask)="onAskProduct(product.id)"/>
-  }
-  
-  <app-add-product-card routerLink="create"></app-add-product-card>
-  </div>
 
+
+  @if (!((products$ | async)?.length)) {
+    <div class="empty-state-container">
+      <img src="https://www.primeinstitute.com/assets/web/images/no-result-icon.svg">
+      <h4>You don't have any connected products.</h4>
+      <span class="meta-text">You can connect one now!</span>
+      <button routerLink="create" mat-raised-button color="primary" >
+        Connect product
+      </button>
+    </div>
+  } @else {
+    <div class="products-container">
+      @for (product of products$ | async; track $index) {
+        <app-product-card
+        [title]="product.title"
+        [description]="product.description"
+        [imageUrl]="product.imageUrl"
+        (ask)="onAskProduct(product.id)"/>
+      }
+      
+      <app-add-product-card routerLink="create"></app-add-product-card>
+      </div>
+  }

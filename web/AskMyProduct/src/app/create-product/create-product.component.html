@@ -1,91 +1,107 @@
-<mat-card class="connection-card">
-  <mat-card-title>New product connection</mat-card-title>
-  <mat-card-subtitle>Add a connection configuration for your product</mat-card-subtitle>
-  <form [formGroup]="dbForm" (ngSubmit)="onSubmit()">
-
-    <!-- Product name -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Product Name</mat-label>
-      <input matInput placeholder="Enter your product name (e.g., Coca-Cola Company)"  formControlName="productName" required>
-      <mat-error *ngIf="dbForm.get('productName')?.hasError('required')">
-        Product name is required
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Product description -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Product description</mat-label>
-      <textarea matInput placeholder="Describe your product (e.g., Coca-Cola is a company which manufactures, sells and markets soft drinks... )"  formControlName="productName" required></textarea>
-      <mat-error *ngIf="dbForm.get('productDescription')?.hasError('required')">
-        Product description is required
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Database Type -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Database Type</mat-label>
-      <mat-select formControlName="dbType" required>
-        <mat-option *ngFor="let db of databaseTypes" [value]="db">{{ db }}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="dbForm.get('dbType')?.hasError('required')">
-        Database type is required
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Host -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Host</mat-label>
-      <input matInput placeholder="Enter host (e.g., localhost)" formControlName="host" required>
-      <mat-error *ngIf="dbForm.get('host')?.hasError('required')">
-        Host is required
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Port -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Port</mat-label>
-      <input matInput type="number" placeholder="Enter port (e.g., 5432)" formControlName="port" required>
-      <mat-error *ngIf="dbForm.get('port')?.hasError('required')">
-        Port is required
-      </mat-error>
-      <mat-error *ngIf="dbForm.get('port')?.hasError('pattern')">
-        Port must be a valid number
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Username -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Username</mat-label>
-      <input matInput placeholder="Enter username" formControlName="username" required>
-      <mat-error *ngIf="dbForm.get('username')?.hasError('required')">
-        Username is required
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Password -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Password</mat-label>
-      <input matInput placeholder="Enter password" formControlName="password" type="password" required>
-      <mat-error *ngIf="dbForm.get('password')?.hasError('required')">
-        Password is required
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Database Name -->
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Database Name</mat-label>
-      <input matInput placeholder="Enter database name" formControlName="databaseName" required>
-      <mat-error *ngIf="dbForm.get('databaseName')?.hasError('required')">
-        Database name is required
-      </mat-error>
-    </mat-form-field>
-
-    <!-- Submit Button -->
-    <div class="button-group">
-      <button mat-raised-button color="primary" type="submit" [disabled]="dbForm.invalid">
-        Connect
-      </button>
+@if (!(productsFacade.isLoading$ | async)) {
+  <mat-card  class="connection-card">
+    <mat-card-title>New product connection</mat-card-title>
+    <mat-card-subtitle>Add a connection configuration for your product</mat-card-subtitle>
+    <div [formGroup]="dbForm">
+  
+      <!-- Product name -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Product Name</mat-label>
+        <input matInput placeholder="Enter your product name (e.g., Coca-Cola Company)"  formControlName="productName" required>
+        <mat-error *ngIf="dbForm.get('productName')?.hasError('required')">
+          Product name is required
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Product description -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Product description</mat-label>
+        <textarea matInput placeholder="Describe your product (e.g., Coca-Cola is a company which manufactures, sells and markets soft drinks... )"  formControlName="productDescription" required></textarea>
+        <mat-error *ngIf="dbForm.get('productDescription')?.hasError('required')">
+          Product description is required
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Product image -->
+      
+      <button class="image-uploader-button" type="button" mat-raised-button (click)="fileInput.click()">Select product image</button>
+      <input matInput hidden >
+      <input hidden formControlName="productImage" #fileInput type="file" >
+      
+      
+      <!-- Database Type -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Database Type</mat-label>
+        <mat-select formControlName="dbType" required>
+          <mat-option *ngFor="let db of databaseTypes" [value]="db">{{ db }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="dbForm.get('dbType')?.hasError('required')">
+          Database type is required
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Host -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Host</mat-label>
+        <input matInput placeholder="Enter host (e.g., localhost)" formControlName="host" required>
+        <mat-error *ngIf="dbForm.get('host')?.hasError('required')">
+          Host is required
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Port -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Port</mat-label>
+        <input matInput type="number" placeholder="Enter port (e.g., 5432)" formControlName="port" required>
+        <mat-error *ngIf="dbForm.get('port')?.hasError('required')">
+          Port is required
+        </mat-error>
+        <mat-error *ngIf="dbForm.get('port')?.hasError('pattern')">
+          Port must be a valid number
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Username -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput placeholder="Enter username" formControlName="username" required>
+        <mat-error *ngIf="dbForm.get('username')?.hasError('required')">
+          Username is required
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Password -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput placeholder="Enter password" formControlName="password" type="password" required>
+        <mat-error *ngIf="dbForm.get('password')?.hasError('required')">
+          Password is required
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Database Name -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Database Name</mat-label>
+        <input matInput placeholder="Enter database name" formControlName="databaseName" required>
+        <mat-error *ngIf="dbForm.get('databaseName')?.hasError('required')">
+          Database name is required
+        </mat-error>
+      </mat-form-field>
+  
+      <div class="button-group">
+        <button (click)="onSubmit()" mat-raised-button color="primary" >
+          Connect
+        </button>
+      </div>
+  
     </div>
+  </mat-card>
+}
 
-  </form>
-</mat-card>
+@else {
+  <div class="ui-flex ui-flex-column ui-items-center ui-mt">
+    <h2>We are connecting to your product</h2>
+    <div class="meta-text ui-mt">Please wait</div>
+    <mat-spinner class="ui-mt"></mat-spinner>
+  </div>
+}

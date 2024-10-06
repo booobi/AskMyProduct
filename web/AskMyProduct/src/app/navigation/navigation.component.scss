@@ -21,4 +21,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+
+  &--active {
+    background:rgb(225 213 213 / 60%) !important
+  }
 }

@@ -3,15 +3,18 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ProductCardComponent } from './product-card/product-card.component';
 import { AddProductCardComponent } from './add-product-card/add-product-card.component';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { of } from 'rxjs';
+import { of, tap } from 'rxjs';
+import { ProductsFacade } from '../data/products.facade';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css'],
+  styleUrls: ['./products.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
+    MatButtonModule,
     RouterModule,
     ProductCardComponent,
     AddProductCardComponent,
@@ -22,22 +25,9 @@ export class ProductsComponent implements OnInit {
 
   #activatedRoute = inject(ActivatedRoute);
 
-  products$ = of([
-    {
-      id: 'cargo123',
-      title: 'Cargo123',
-      description:
-        'Cargo123 is a logistics company that specializes in providing efficient and reliable transportation solutions. With a focus on streamlining supply chains, Cargo123 offers a range of services including freight management, warehousing, and timely delivery across various regions.',
-        imageUrl: 'https://fleetnetamerica.com/wp-content/uploads/sites/2/2017/07/Semi-Truck-Fact-scaled.jpg',
-    },
-    {
-      id: 'doghouse123',
-      title: 'DogHouse123',
-      description:
-        'DogHouse123 is a dedicated dog shelter focused on rescuing, rehabilitating, and rehoming stray and abandoned dogs. We provide a safe and loving environment where each dog receives medical care, nourishment, and socialization, ensuring they are prepared for a happy, healthy future with their forever families.',
-        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbEnxFBjZBI7uUoU_DcDAlNbDa9ehHImqCOQ&s'
-    },
-  ]);
+  productsFacade = inject(ProductsFacade);
+
+  products$ = this.productsFacade.products$.pipe(tap(console.log));
 
   onAskProduct(productId: string) {
     this.#router.navigate(['ask', productId], {relativeTo: this.#activatedRoute});

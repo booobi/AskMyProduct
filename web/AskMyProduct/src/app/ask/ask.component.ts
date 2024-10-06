@@ -59,6 +59,7 @@ export class AskComponent {
   }
 
   resetQuestion() {
-    this.facade.resetAnswer()
+    this.facade.resetAnswer();
+    this.userInput.reset();
   }
 }
